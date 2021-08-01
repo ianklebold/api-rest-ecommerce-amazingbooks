@@ -44,7 +44,7 @@ public class Book {
     @Column(name = "inventorycode", nullable = false, updatable = false, unique = true)
     private String inventoryCode;
 
- 
+    public Book(){}
 
     public Book(Long id, String name, String description, String authors, String gender, String edition, Double price,
             NameCategory category, String inventoryCode) {
