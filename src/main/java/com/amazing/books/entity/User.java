@@ -1,7 +1,6 @@
 package com.amazing.books.entity;
 
-import java.util.List;
-import java.util.ArrayList;
+
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -10,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -43,26 +41,21 @@ public class User{
      * 
      */
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
-    private List<CartClosed> cartClosed = new ArrayList<CartClosed>();
-
     @OneToOne(mappedBy = "user" ,cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
-    private CartInProgress cartInProgresses;
+    private Cart cart;
     
     
     public User(){
-        
     }
-   
-    public User(Long id, String name, String surname, String address, Date createdDate, List<CartClosed> cartClosed,
-            CartInProgress cartInProgresses) {
+
+
+    public User(Long id, String name, String surname, String address, Date createdDate, Cart cart) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.address = address;
         this.createdDate = createdDate;
-        this.cartClosed = cartClosed;
-        this.cartInProgresses = cartInProgresses;
+        this.cart = cart;
     }
 
     /**
@@ -107,6 +100,19 @@ public class User{
         this.surname = surname;
     }
 
+    /**
+     * @return String return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     /**
      * @return Date return the createdDate
@@ -122,49 +128,18 @@ public class User{
         this.createdDate = createdDate;
     }
 
-
     /**
-     * @return ArrayList<CartInProgress> return the cartInProgresses
+     * @return Cart return the cart
      */
-    public CartInProgress getCartInProgresses() {
-        return cartInProgresses;
+    public Cart getCart() {
+        return cart;
     }
 
     /**
-     * @param cartInProgresses the cartInProgresses to set
+     * @param cart the cart to set
      */
-    public void setCartInProgresses(CartInProgress cartInProgresses) {
-        this.cartInProgresses = cartInProgresses;
-    }
-
-
-    /**
-     * @return ArrayList<CartClosed> return the cartClosed
-     */
-    public List<CartClosed> getCartClosed() {
-        return cartClosed;
-    }
-
-    /**
-     * @param cartClosed the cartClosed to set
-     */
-    public void setCartClosed(List<CartClosed> cartClosed) {
-        this.cartClosed = cartClosed;
-    }
-
-
-    /**
-     * @return String return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCart(Cart cart) {
+        this.cart = cart;
     }
 
 }
