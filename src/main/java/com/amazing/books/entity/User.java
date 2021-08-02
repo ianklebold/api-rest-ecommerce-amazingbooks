@@ -1,7 +1,9 @@
 package com.amazing.books.entity;
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,11 +11,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
 
 @Entity
 public class User{
@@ -40,16 +48,15 @@ public class User{
      * Relationships!!!
      * 
      */
-
-    @OneToOne(mappedBy = "user" ,cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
-    private Cart cart;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user",cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<Cart> cart = new ArrayList<Cart>();
     
     
     public User(){
     }
 
-
-    public User(Long id, String name, String surname, String address, Date createdDate, Cart cart) {
+    public User(Long id, String name, String surname, String address, Date createdDate, List<Cart> cart) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -129,16 +136,16 @@ public class User{
     }
 
     /**
-     * @return Cart return the cart
+     * @return List<Cart> return the cart
      */
-    public Cart getCart() {
+    public List<Cart> getCart() {
         return cart;
     }
 
     /**
      * @param cart the cart to set
      */
-    public void setCart(Cart cart) {
+    public void setCart(List<Cart> cart) {
         this.cart = cart;
     }
 

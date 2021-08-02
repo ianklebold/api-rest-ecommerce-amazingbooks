@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import com.amazing.books.entity.Book;
+import com.amazing.books.entity.Cart;
 import com.amazing.books.entity.User;
 import com.amazing.books.repository.BookRepository;
+import com.amazing.books.repository.CartRepository;
 import com.amazing.books.repository.UserRepository;
 import com.amazing.books.utils.NameCategory;
 
@@ -21,6 +23,9 @@ public class AzgBooksService {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    CartRepository cartRepository;
 
     /* METHODS FOR BOOK!!! */
 
@@ -103,6 +108,28 @@ public class AzgBooksService {
 
         return userRepository.save(user);
     }
+
+
+    /* METHODS FOR CART!!! */
+
+    public Cart newCart(Cart cart){
+        
+        return cartRepository.save(cart);
+    }
+
+    public ArrayList<Cart> getAllCarts(){
+        return (ArrayList<Cart>) cartRepository.findAll();
+
+    }
+
+    public Optional<Cart> getCartById(Long id){
+        return cartRepository.findById(id);
+    }
+
+    public void deleteCart(Cart cart){
+        cartRepository.delete(cart);
+    }
+
 
     
 
