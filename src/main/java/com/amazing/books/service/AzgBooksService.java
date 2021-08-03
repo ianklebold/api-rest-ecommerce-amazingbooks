@@ -49,6 +49,10 @@ public class AzgBooksService {
         return bookRepository.findByNameStartingWith(nombre);
     }
 
+    public ArrayList<Book> getAllByCategory(NameCategory category){
+        return bookRepository.findByCategory(category);
+    }
+
     public Optional<Book> getBookById(Long id){
         return bookRepository.findById(id);
     }

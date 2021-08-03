@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.amazing.books.entity.Book;
 import com.amazing.books.service.AzgBooksService;
+import com.amazing.books.utils.NameCategory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,16 @@ public class BookController {
         
         return azgBooksService.getAllByNameLikeThing(name);
     }
+
+    @GetMapping(value="/v1/book/category")
+    public ArrayList<Book> getAllByCategory(@RequestParam(value="name") NameCategory category) {
+        /**
+         * Todos los productos de una categoría dada
+         * http://localhost:8080/amazingbooks/v1/book/category?name={category}
+         */
+        return azgBooksService.getAllByCategory(category);
+    }
+    
     
     
 
