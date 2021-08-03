@@ -33,7 +33,7 @@ public class Book {
     @Column(name="edition", nullable=false, updatable = true)
     private String edition;
 
-    @Column(name="price", nullable=false, updatable = false)
+    @Column(name="price", nullable=false, updatable = true)
     private Double price;
 
     @Column(name = "category", nullable = false, updatable = true)

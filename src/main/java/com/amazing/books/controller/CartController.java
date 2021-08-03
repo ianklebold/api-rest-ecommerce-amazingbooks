@@ -37,6 +37,11 @@ public class CartController {
         return azgBooksService.getAllCarts();
     }
 
+    @GetMapping("/v1/cart/withbooks")
+    public ArrayList<Cart> getAllCartsWhitBooks() {
+        return azgBooksService.getAllCartsWhitBooks();
+    }
+
     @DeleteMapping("/v1/cart/delete/{id}")
     public void deleteCart(@PathVariable(name="id") Long id ){
         Optional<Cart> cart = azgBooksService.getCartById(id);

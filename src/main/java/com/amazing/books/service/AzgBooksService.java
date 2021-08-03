@@ -50,6 +50,31 @@ public class AzgBooksService {
     }
 
     public void deleteBook(Book book){
+        ArrayList<Cart> listCarritos = (ArrayList<Cart>) cartRepository.findAll(); 
+        
+        for (Cart cart : listCarritos) {
+            if(cart.getState().equals(StateCart.INPROGRESS)){
+                List<Book> listaCart = cart.getListBooks();
+                
+                for (Book cart2 : listaCart) {
+                    Boolean foundIds = false;
+                    if(book.getId().equals(cart2.getId())){
+                        foundIds = true;
+                    }
+
+                    if(foundIds){
+                        Cart foundCarrito = cartRepository.findById(book.getId()).get();
+                        foundCarrito.setTotal(foundCarrito.getTotal() - book.getPrice());
+                        cartRepository.save(foundCarrito);
+                    }
+                    
+           
+                }
+            
+            }
+
+        }
+
         bookRepository.delete(book);
     }
 
@@ -59,11 +84,77 @@ public class AzgBooksService {
         if ( (controlCategory(String.valueOf(book.getCategory()))) == false ){
             book.setCategory(foundBook.get().getCategory());
         }
-
-        book.setPrice(foundBook.get().getPrice());
+        
+        if(book.getPrice() != foundBook.get().getPrice()){
+            updateTotalCartForBooks(book, foundBook);
+        }
+        
+        //Codigo de producto no se puede cambiar
         book.setInventoryCode(foundBook.get().getInventoryCode());
-
+        System.out.println(book.getPrice());
         return bookRepository.save(book);
+
+    }
+
+    public ArrayList<Cart> getAllCartsWhitBooks(){
+        return (ArrayList<Cart>) cartRepository.findAll();
+    }
+
+    
+    public void updateTotalCartForBooks(Book book, Optional<Book> foundBook){
+        
+        ArrayList<Cart> listCarritos = (ArrayList<Cart>) cartRepository.findAll(); 
+        System.out.println(listCarritos.size());
+
+
+        for (Cart cart : listCarritos) {
+            
+            if(cart.getState().equals(StateCart.INPROGRESS)){
+                List<Book> listaCart = cart.getListBooks();
+
+                for (int i = 0; i < listaCart.size(); i++){
+                   
+                    Boolean foundIds = false;
+                    if(book.getId().equals(listaCart.get(i).getId())){                        
+
+                        foundIds = true;
+                    }
+
+                    if(foundIds){
+                        if(foundBook.get().getPrice() > book.getPrice()){
+                            System.out.println("Enttre porque disminuye el precio");
+
+
+                            //El precio disminuyó, disminuye el precio en cada carrito.
+                            System.out.println(String.valueOf(cart.getTotal()) + "-" + String.valueOf(foundBook.get().getPrice()));
+                            cart.setTotal(cart.getTotal() - foundBook.get().getPrice());
+                            System.out.println(cart.getTotal());
+
+                            System.out.println(String.valueOf(cart.getTotal()) + "+" + String.valueOf(book.getPrice()));
+                            cart.setTotal(cart.getTotal() + book.getPrice());
+                            System.out.println(cart.getTotal());
+
+                            
+                        }else if(foundBook.get().getPrice() < book.getPrice()){
+                            System.out.println("Enttre porque aumenta el precio");
+
+                            //El precio aumentó, aumenta el precio en cada carrito
+                            System.out.println(String.valueOf(cart.getTotal()) + "-" + String.valueOf(foundBook.get().getPrice()));
+                            cart.setTotal(cart.getTotal() - foundBook.get().getPrice());
+                            System.out.println(cart.getTotal());
+                            
+                            System.out.println(String.valueOf(cart.getTotal()) + "+" + String.valueOf(book.getPrice()));
+                            cart.setTotal(cart.getTotal() + book.getPrice());
+                            System.out.println(cart.getTotal());
+
+                        }
+                        cartRepository.save(cart); 
+                    }
+                }  
+            }
+
+        }
+       
 
     }
 
