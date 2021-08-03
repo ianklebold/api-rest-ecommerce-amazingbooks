@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -35,6 +37,20 @@ public class BookController {
     public ArrayList<Book> getAllBooks() {
         return azgBooksService.getAllBooks();
     }
+
+
+    @GetMapping(value="/v1/book/filter")
+    public ArrayList<Book> getAllByNameLikeThing(@RequestParam(value="name") String name) {
+        /**
+         * Todos los productos que tengan un nombre que comience con un string dado 
+         * http://localhost:8080/amazingbooks/v1/book/filter?name={name}
+         * 
+         */
+        
+        return azgBooksService.getAllByNameLikeThing(name);
+    }
+    
+    
 
     @DeleteMapping("/v1/book/delete/{id}")
     public void deleteBook(@PathVariable(name="id") Long id ){

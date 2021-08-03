@@ -45,6 +45,10 @@ public class AzgBooksService {
         return (ArrayList<Book>) bookRepository.findAll();
     }
 
+    public ArrayList<Book> getAllByNameLikeThing(String nombre){
+        return bookRepository.findByNameStartingWith(nombre);
+    }
+
     public Optional<Book> getBookById(Long id){
         return bookRepository.findById(id);
     }
@@ -56,16 +60,17 @@ public class AzgBooksService {
             if(cart.getState().equals(StateCart.INPROGRESS)){
                 List<Book> listaCart = cart.getListBooks();
                 
-                for (Book cart2 : listaCart) {
+                for (int i = 0; i < listaCart.size(); i++){
                     Boolean foundIds = false;
-                    if(book.getId().equals(cart2.getId())){
+                    if(book.getId().equals(listaCart.get(i).getId())){
                         foundIds = true;
                     }
 
                     if(foundIds){
-                        Cart foundCarrito = cartRepository.findById(book.getId()).get();
-                        foundCarrito.setTotal(foundCarrito.getTotal() - book.getPrice());
-                        cartRepository.save(foundCarrito);
+                       
+                        cart.setTotal(cart.getTotal() - book.getPrice());
+                        cart.getListBooks().remove(book);
+                        cartRepository.save(cart);
                     }
                     
            
@@ -122,30 +127,18 @@ public class AzgBooksService {
 
                     if(foundIds){
                         if(foundBook.get().getPrice() > book.getPrice()){
-                            System.out.println("Enttre porque disminuye el precio");
-
 
                             //El precio disminuyó, disminuye el precio en cada carrito.
-                            System.out.println(String.valueOf(cart.getTotal()) + "-" + String.valueOf(foundBook.get().getPrice()));
                             cart.setTotal(cart.getTotal() - foundBook.get().getPrice());
-                            System.out.println(cart.getTotal());
 
-                            System.out.println(String.valueOf(cart.getTotal()) + "+" + String.valueOf(book.getPrice()));
                             cart.setTotal(cart.getTotal() + book.getPrice());
-                            System.out.println(cart.getTotal());
-
                             
                         }else if(foundBook.get().getPrice() < book.getPrice()){
-                            System.out.println("Enttre porque aumenta el precio");
 
                             //El precio aumentó, aumenta el precio en cada carrito
-                            System.out.println(String.valueOf(cart.getTotal()) + "-" + String.valueOf(foundBook.get().getPrice()));
                             cart.setTotal(cart.getTotal() - foundBook.get().getPrice());
-                            System.out.println(cart.getTotal());
                             
-                            System.out.println(String.valueOf(cart.getTotal()) + "+" + String.valueOf(book.getPrice()));
                             cart.setTotal(cart.getTotal() + book.getPrice());
-                            System.out.println(cart.getTotal());
 
                         }
                         cartRepository.save(cart); 
@@ -290,6 +283,15 @@ public class AzgBooksService {
     public void sumTotal(Cart cart){
         //Iteramos y obtenemos el total final
         for (Book book : cart.getListBooks()) {
+            /**
+             * Ahora nos aseguramos que se mantenga el precio de lista
+             *  y no se lo pueda cambiar
+             */
+            Book bookaux = findBookById(book.getId()).get();
+            book.setPrice(bookaux.getPrice());
+            /**
+             * Seteamos el precio final
+             */
             cart.setTotal(cart.getTotal() + book.getPrice());
         }
     }
@@ -312,16 +314,11 @@ public class AzgBooksService {
         if(foundCart.getState().equals(StateCart.INPROGRESS)){
             //Solo se admiten cambios en carritos en proceso
 
-            if(foundCart.getListBooks().size() > cart.getListBooks().size()){  
-                /**
-                 * SI antes tenia mas libros que ahora, entonces se sacaron libros
-                 * Por eso reseteamos el total
-                 */
-                cart.setTotal(0.0);
-            }
+            
             /**
              * Sumamos el total actual
              */
+            cart.setTotal(0.0);
             sumTotal(cart);
             //La fecha y usuario no se puede cambiar
             cart.setCreatedDate(foundCart.getCreatedDate());
