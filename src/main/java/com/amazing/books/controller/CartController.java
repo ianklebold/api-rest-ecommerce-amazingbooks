@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 @RestController
@@ -40,4 +42,13 @@ public class CartController {
         Optional<Cart> cart = azgBooksService.getCartById(id);
         azgBooksService.deleteCart(cart.get()); 
     }    
+
+    @PutMapping("/v1/cart/update/{id}")
+    public Cart updateCart(@PathVariable Long id, 
+                                      @RequestBody Cart cart) {
+        
+        Cart foundCart = azgBooksService.getCartById(id).get();
+        
+        return azgBooksService.updateCart(cart, foundCart);
+    }
 }
