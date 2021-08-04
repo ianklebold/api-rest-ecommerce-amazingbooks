@@ -32,24 +32,40 @@ public class UserController {
 
     @PostMapping("/v1/newuser")
     public User postNewUser(@RequestBody User user) {
+        /**
+         * Para crear un nuevo usuario
+         */
         
         return azgUserService.newUser(user);
     }
 
     @GetMapping("/v1/user")
     public ArrayList<User> getAllUser() {
+        /**
+         * Obtener todos los usuarios
+         */
         return azgUserService.getAllUsers();
     }
 
     @DeleteMapping("/v1/user/delete/{id}")
     public void deleteUser(@PathVariable(name="id") Long id ){
-        //Find user
+        /**
+         * Eliminar un usuario
+         * 
+         *  --> Eliminar un usuario implica eliminar todos sus carritos.
+         */
         Optional<User> user = azgUserService.getUserById(id);
         azgUserService.deleteUser(user.get());
     }
 
     @PutMapping(value="/v1/user/update/{id}")
     public User updateUser(@PathVariable(name = "id") Long id, @RequestBody User user) {
+        /**
+         * Actualizar los datos de un usuario
+         * 
+         * --> La actualizacion de un usuario implica actualizar los datos a sus
+         *     Entidades que dependan de él.
+         */
         
         Optional<User> foundUser = azgUserService.getUserById(id);
         

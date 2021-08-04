@@ -31,11 +31,22 @@ public class CartController {
 
     @PostMapping("/v1/newcart")
     public Cart cartNewCart(@RequestBody Cart cart){
+        /**
+         * Creacion de un nuevo carrito.
+         *  -> Se puede crear un carrito, cargar los libros y cerrarlo.
+         *  -> No se permiten cerrar carritos sin libros.
+         *  -> Se admite solo un carrito en proceso por usuario
+         *  -> Se admiten multiples carritos cerrados por usuarios.
+         * 
+         */
         return azgCartService.newCart(cart);
     }
  
     @GetMapping("/v1/cart")
     public ArrayList<Cart> getAllCarts() {
+        /**
+         * Obtener todos los carritos
+         */
         return azgCartService.getAllCarts();
     }
 
@@ -46,6 +57,9 @@ public class CartController {
 
     @DeleteMapping("/v1/cart/delete/{id}")
     public void deleteCart(@PathVariable(name="id") Long id ){
+        /**
+         * Eliminamos un carrito
+         */
         Optional<Cart> cart = azgCartService.getCartById(id);
         azgCartService.deleteCart(cart.get()); 
     }    
@@ -53,6 +67,14 @@ public class CartController {
     @PutMapping("/v1/cart/update/{id}")
     public Cart updateCart(@PathVariable Long id, 
                                       @RequestBody Cart cart) {
+        /**
+         * Actualizacion de carrito.
+         *  -> Se puede aumentar la cantidad de libros y decrementar la cantidad de libros
+         *  -> Se puede cargar mas de una vez un libro (Varias compras de un mismo producto)
+         *  -> Al aumentar libros o decrementar se actualiza automaticamente el precio total 
+         *  
+         *  **Nota : Solo se admite actualizacion de carritos en proceso.
+         */
         
         Cart foundCart = azgCartService.getCartById(id).get();
         

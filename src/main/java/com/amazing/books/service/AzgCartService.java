@@ -130,19 +130,6 @@ public class AzgCartService {
         }
     }
 
-    public ArrayList<Cart> getAllCarts(){
-        return (ArrayList<Cart>) cartRepository.findAll();
-
-    }
-
-    public Optional<Cart> getCartById(Long id){
-        return cartRepository.findById(id);
-    }
-
-    public void deleteCart(Cart cart){
-        cartRepository.delete(cart);
-    }
-
     public Cart updateCart(Cart cart, Cart foundCart){
 
         if(foundCart.getState().equals(StateCart.INPROGRESS)){
@@ -175,6 +162,7 @@ public class AzgCartService {
         }
     }
 
+    // Metodos para peticiones!!!
     public Optional<Book> findBookById(Long id){
         return bookRepository.findById(id);
     }
@@ -182,6 +170,21 @@ public class AzgCartService {
     public ArrayList<Cart> getAllCartsWhitBooks(){
         return (ArrayList<Cart>) cartRepository.findAll();
     }
+
+
+    public ArrayList<Cart> getAllCarts(){
+        return (ArrayList<Cart>) cartRepository.findAll();
+
+    }
+
+    public Optional<Cart> getCartById(Long id){
+        return cartRepository.findById(id);
+    }
+
+    public void deleteCart(Cart cart){
+        cartRepository.delete(cart);
+    }
+
 
     
 }

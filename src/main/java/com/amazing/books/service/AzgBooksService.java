@@ -31,6 +31,9 @@ public class AzgBooksService {
     /* METHODS FOR BOOK!!! */
 
     public Book newBook(Book book){
+        /**
+         * Creacion de un libro
+         */
 
         if((controlCategory(String.valueOf(book.getCategory()))) == false){
             book.setCategory(null);
@@ -40,37 +43,28 @@ public class AzgBooksService {
         return bookRepository.save(book);
     }
 
-    public ArrayList<Book> getAllBooks(){
-        return (ArrayList<Book>) bookRepository.findAll();
-    }
 
-    public ArrayList<Book> getAllByNameLikeThing(String nombre){
-        return bookRepository.findByNameStartingWith(nombre);
-    }
-
-    public ArrayList<Book> getAllByCategory(NameCategory category){
-        return bookRepository.findByCategory(category);
-    }
-
-    public Optional<Book> getBookById(Long id){
-        return bookRepository.findById(id);
-    }
 
     public void deleteBook(Book book){
         ArrayList<Cart> listCarritos = (ArrayList<Cart>) cartRepository.findAll(); 
         
         for (Cart cart : listCarritos) {
             if(cart.getState().equals(StateCart.INPROGRESS)){
+                //Obtenemos los libros de un carrito.
                 List<Book> listaCart = cart.getListBooks();
                 
                 for (int i = 0; i < listaCart.size(); i++){
                     Boolean foundIds = false;
                     if(book.getId().equals(listaCart.get(i).getId())){
+                        //Controlamos si el libro a eliminar esta en algun carrito
                         foundIds = true;
                     }
 
                     if(foundIds){
-                       
+                       /**
+                        *Damos de baja libro de carrito y 
+                        *Actualizamos su precio (Only inProgess) 
+                        */
                         cart.setTotal(cart.getTotal() - book.getPrice());
                         cart.getListBooks().remove(book);
                         cartRepository.save(cart);
@@ -82,7 +76,7 @@ public class AzgBooksService {
             }
 
         }
-
+        //Eliminamos libro
         bookRepository.delete(book);
     }
 
@@ -94,35 +88,35 @@ public class AzgBooksService {
         }
         
         if(book.getPrice() != foundBook.get().getPrice()){
+            /**
+             * Metodo para actualizar precios de carritos con libro actualizado
+             */
             updateTotalCartForBooks(book, foundBook);
         }
         
         //Codigo de producto no se puede cambiar
         book.setInventoryCode(foundBook.get().getInventoryCode());
-        System.out.println(book.getPrice());
+
         return bookRepository.save(book);
 
     }
-
-
-
     
     public void updateTotalCartForBooks(Book book, Optional<Book> foundBook){
         
         ArrayList<Cart> listCarritos = (ArrayList<Cart>) cartRepository.findAll(); 
-        System.out.println(listCarritos.size());
 
 
         for (Cart cart : listCarritos) {
-            
+            //Preguntamos si el carrito esta en progreso
             if(cart.getState().equals(StateCart.INPROGRESS)){
+                //Si es asi obtengo su lista de libros
                 List<Book> listaCart = cart.getListBooks();
 
                 for (int i = 0; i < listaCart.size(); i++){
                    
                     Boolean foundIds = false;
                     if(book.getId().equals(listaCart.get(i).getId())){                        
-
+                        //Preguntamos si el libro actulizado esta en la lista
                         foundIds = true;
                     }
 
@@ -153,6 +147,9 @@ public class AzgBooksService {
     }
 
     public Boolean controlCategory(String newCategory){
+        /**
+         * Un metodo que sirve para controlar la categoria
+         */
         ArrayList<String> listCategory = new ArrayList<String>(); 
    
         for (NameCategory category : Arrays.asList(NameCategory.values())) {
@@ -163,7 +160,25 @@ public class AzgBooksService {
         
     }
 
+    // Metodos para peticiones!!!
+
     public Optional<Book> findBookById(Long id){
+        return bookRepository.findById(id);
+    }
+
+    public ArrayList<Book> getAllBooks(){
+        return (ArrayList<Book>) bookRepository.findAll();
+    }
+
+    public ArrayList<Book> getAllByNameLikeThing(String nombre){
+        return bookRepository.findByNameStartingWith(nombre);
+    }
+
+    public ArrayList<Book> getAllByCategory(NameCategory category){
+        return bookRepository.findByCategory(category);
+    }
+
+    public Optional<Book> getBookById(Long id){
         return bookRepository.findById(id);
     }
 

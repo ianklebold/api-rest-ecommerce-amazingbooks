@@ -30,12 +30,18 @@ public class BookController {
 
     @PostMapping("/v1/newbook")
     public Book postNewBook(@RequestBody Book book) {
+        /**
+         * Crear un nuevo libro
+         */
         
         return azgBooksService.newBook(book);
     }
 
     @GetMapping("/v1/book")
     public ArrayList<Book> getAllBooks() {
+        /**
+         * Obtenemos todos los libros
+         */
         return azgBooksService.getAllBooks();
     }
 
@@ -65,6 +71,13 @@ public class BookController {
 
     @DeleteMapping("/v1/book/delete/{id}")
     public void deleteBook(@PathVariable(name="id") Long id ){
+        /**
+         * Eliminar un libro.
+         *  --> Al eliminar un libro, se elimina de todos los carritos dicho producto.
+         *  --> Al eliminar un libro, se actualiza el precio total en cada carrito.
+         * 
+         * **Nota : La actualizacion de precio solo es para carritos en proceso.
+         */
         
         Optional<Book> book = azgBooksService.getBookById(id);
         azgBooksService.deleteBook(book.get());
@@ -74,6 +87,11 @@ public class BookController {
     @PutMapping("/v1/book/update/{id}")
     public Book updateBook(@PathVariable(name = "id") Long id, 
                            @RequestBody Book book) {
+        /**
+         * Actualizar un libro
+         *  --> Al actualizar el precio de un libro, se actualiza el precio total de los 
+         *      carritos que contienen dicho libro.
+         */
        
         Optional<Book> foundBook = azgBooksService.getBookById(id);
         return azgBooksService.updateBook(book, foundBook);
@@ -81,6 +99,9 @@ public class BookController {
 
     @GetMapping("/v1/book/{id}")
     public Book findBookById(@PathVariable(name = "id") Long id) {
+        /**
+         * Obtenemos un libro a partir de su id.
+         */
        
         return azgBooksService.findBookById(id).get();
     }
