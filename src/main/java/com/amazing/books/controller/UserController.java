@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.amazing.books.entity.User;
 import com.amazing.books.service.AzgBooksService;
+import com.amazing.books.service.AzgUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,31 +26,34 @@ public class UserController {
     @Autowired
     AzgBooksService azgBooksService;
 
+    @Autowired
+    AzgUserService azgUserService;
+
 
     @PostMapping("/v1/newuser")
     public User postNewUser(@RequestBody User user) {
         
-        return azgBooksService.newUser(user);
+        return azgUserService.newUser(user);
     }
 
     @GetMapping("/v1/user")
     public ArrayList<User> getAllUser() {
-        return azgBooksService.getAllUsers();
+        return azgUserService.getAllUsers();
     }
 
     @DeleteMapping("/v1/user/delete/{id}")
     public void deleteUser(@PathVariable(name="id") Long id ){
         //Find user
-        Optional<User> user = azgBooksService.getUserById(id);
-        azgBooksService.deleteUser(user.get());
+        Optional<User> user = azgUserService.getUserById(id);
+        azgUserService.deleteUser(user.get());
     }
 
     @PutMapping(value="/v1/user/update/{id}")
     public User updateUser(@PathVariable(name = "id") Long id, @RequestBody User user) {
         
-        Optional<User> foundUser = azgBooksService.getUserById(id);
+        Optional<User> foundUser = azgUserService.getUserById(id);
         
-        return azgBooksService.updateUser(user, foundUser);
+        return azgUserService.updateUser(user, foundUser);
 
     }
     

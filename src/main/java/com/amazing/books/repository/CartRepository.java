@@ -1,7 +1,5 @@
 package com.amazing.books.repository;
 
-import java.util.ArrayList;
-
 import com.amazing.books.entity.Cart;
 
 import org.springframework.data.repository.CrudRepository;
