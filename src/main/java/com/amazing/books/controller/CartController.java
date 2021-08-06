@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import com.amazing.books.entity.Cart;
+import com.amazing.books.entity.User;
 import com.amazing.books.service.AzgBooksService;
 import com.amazing.books.service.AzgCartService;
+import com.amazing.books.service.AzgUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,13 +26,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class CartController {
 
     @Autowired
+    AzgUserService azgUserService;
+
+    @Autowired
     AzgBooksService azgBooksService;
 
     @Autowired
     AzgCartService azgCartService;
 
-    @PostMapping("/v1/newcart")
-    public Cart cartNewCart(@RequestBody Cart cart){
+    @PostMapping("/v1/usuario/{id}/newcart")
+    public Cart cartNewCart(@PathVariable(name="id") Long id ,@RequestBody Cart cart){
         /**
          * Creacion de un nuevo carrito.
          *  -> Se puede crear un carrito, cargar los libros y cerrarlo.
@@ -39,7 +44,15 @@ public class CartController {
          *  -> Se admiten multiples carritos cerrados por usuarios.
          * 
          */
-        return azgCartService.newCart(cart);
+        Optional<User>  user = azgUserService.getUserById(id);
+
+        if(user.isPresent()){
+            cart.setUser(user.get());
+            return azgCartService.newCart(cart);
+        }else{
+            return null;
+        }
+
     }
  
     @GetMapping("/v1/cart")
