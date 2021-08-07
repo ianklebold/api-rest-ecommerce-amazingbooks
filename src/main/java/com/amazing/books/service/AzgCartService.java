@@ -122,6 +122,7 @@ public class AzgCartService {
              *  y no se lo pueda cambiar
              */
             Book bookaux = findBookById(book.getId()).get();
+            
             book.setPrice(bookaux.getPrice());
             /**
              * Seteamos el precio final

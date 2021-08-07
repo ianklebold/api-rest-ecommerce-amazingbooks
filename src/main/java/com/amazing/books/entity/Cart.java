@@ -1,8 +1,10 @@
 package com.amazing.books.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,11 +15,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.amazing.books.utils.StateCart;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -47,21 +51,29 @@ public class Cart{
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
     private User user;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "cart",cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<LineCart> lineCart = new ArrayList<>();
+
 
     Cart(){
         
     }
 
-    
 
-    public Cart(Long id, Date createdDate, Double total, StateCart state, List<Book> listBooks, User user) {
+
+    public Cart(Long id, Date createdDate, Double total, StateCart state, List<Book> listBooks, User user,
+            List<LineCart> lineCart) {
         this.id = id;
         this.createdDate = createdDate;
         this.total = total;
         this.state = state;
         this.listBooks = listBooks;
         this.user = user;
+        this.lineCart = lineCart;
     }
+
+
 
 
 
@@ -147,6 +159,24 @@ public class Cart{
      */
     public void setUser(User user) {
         this.user = user;
+    }
+
+
+
+
+
+    /**
+     * @return List<LineCart> return the lineCart
+     */
+    public List<LineCart> getLineCart() {
+        return lineCart;
+    }
+
+    /**
+     * @param lineCart the lineCart to set
+     */
+    public void setLineCart(List<LineCart> lineCart) {
+        this.lineCart = lineCart;
     }
 
 }
