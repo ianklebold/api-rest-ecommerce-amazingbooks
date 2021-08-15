@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.amazing.books.entity.Book;
 import com.amazing.books.entity.Cart;
+import com.amazing.books.entity.LineCart;
 import com.amazing.books.repository.BookRepository;
 import com.amazing.books.repository.CartRepository;
 import com.amazing.books.repository.UserRepository;
@@ -51,11 +52,13 @@ public class AzgBooksService {
         for (Cart cart : listCarritos) {
             if(cart.getState().equals(StateCart.INPROGRESS)){
                 //Obtenemos los libros de un carrito.
-                List<Book> listaCart = cart.getListBooks();
+                List<LineCart> listaLinea = cart.getLineCart();
+
+               // List<Book> listaCart = cart.getListBooks();
                 
-                for (int i = 0; i < listaCart.size(); i++){
+                for (int i = 0; i < listaLinea.size(); i++){
                     Boolean foundIds = false;
-                    if(book.getId().equals(listaCart.get(i).getId())){
+                    if(book.getId().equals(listaLinea.get(i).getBook().getId())){
                         //Controlamos si el libro a eliminar esta en algun carrito
                         foundIds = true;
                     }
@@ -66,7 +69,10 @@ public class AzgBooksService {
                         *Actualizamos su precio (Only inProgess) 
                         */
                         cart.setTotal(cart.getTotal() - book.getPrice());
-                        cart.getListBooks().remove(book);
+                        //cart.getListBooks().remove(book);
+
+                        cart.getLineCart().remove(cart.getLineCart().get(i));
+                        
                         cartRepository.save(cart);
                     }
                     
@@ -110,12 +116,12 @@ public class AzgBooksService {
             //Preguntamos si el carrito esta en progreso
             if(cart.getState().equals(StateCart.INPROGRESS)){
                 //Si es asi obtengo su lista de libros
-                List<Book> listaCart = cart.getListBooks();
+                List<LineCart> listaLinea = cart.getLineCart();
 
-                for (int i = 0; i < listaCart.size(); i++){
+                for (int i = 0; i < listaLinea.size(); i++){
                    
                     Boolean foundIds = false;
-                    if(book.getId().equals(listaCart.get(i).getId())){                        
+                    if(book.getId().equals(listaLinea.get(i).getBook().getId())){                        
                         //Preguntamos si el libro actulizado esta en la lista
                         foundIds = true;
                     }

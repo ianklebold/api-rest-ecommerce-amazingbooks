@@ -44,9 +44,6 @@ public class Cart{
     @Enumerated(value = EnumType.STRING)
     private StateCart state;
 
-    @ManyToMany(cascade = {})
-    private List<Book> listBooks;
-
     @JsonBackReference
     @ManyToOne(cascade = {}, fetch = FetchType.EAGER)
     private User user;
@@ -62,13 +59,12 @@ public class Cart{
 
 
 
-    public Cart(Long id, Date createdDate, Double total, StateCart state, List<Book> listBooks, User user,
+    public Cart(Long id, Date createdDate, Double total, StateCart state, User user,
             List<LineCart> lineCart) {
         this.id = id;
         this.createdDate = createdDate;
         this.total = total;
         this.state = state;
-        this.listBooks = listBooks;
         this.user = user;
         this.lineCart = lineCart;
     }
@@ -131,20 +127,6 @@ public class Cart{
      */
     public void setState(StateCart state) {
         this.state = state;
-    }
-
-    /**
-     * @return List<Book> return the listBooks
-     */
-    public List<Book> getListBooks() {
-        return listBooks;
-    }
-
-    /**
-     * @param listBooks the listBooks to set
-     */
-    public void setListBooks(List<Book> listBooks) {
-        this.listBooks = listBooks;
     }
 
     /**

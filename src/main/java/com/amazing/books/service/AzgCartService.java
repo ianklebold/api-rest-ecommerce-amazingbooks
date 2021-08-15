@@ -7,9 +7,11 @@ import java.util.Optional;
 
 import com.amazing.books.entity.Book;
 import com.amazing.books.entity.Cart;
+import com.amazing.books.entity.LineCart;
 import com.amazing.books.entity.User;
 import com.amazing.books.repository.BookRepository;
 import com.amazing.books.repository.CartRepository;
+import com.amazing.books.repository.LineCartRepository;
 import com.amazing.books.repository.UserRepository;
 import com.amazing.books.utils.StateCart;
 
@@ -29,6 +31,9 @@ public class AzgCartService {
     @Autowired
     BookRepository bookRepository;
 
+    @Autowired
+    LineCartRepository lineCartRepository;
+
 
     /* METHODS FOR CART!!! */
 
@@ -41,7 +46,7 @@ public class AzgCartService {
             /**
              * Si el nuevo carrito pasa al estado cerrado
              */
-            if(cart.getListBooks().size() == 0){
+            if(cart.getLineCart().size() == 0){
                 /**
                  * No existe carrito cerrado sin libros
                  */
@@ -50,6 +55,9 @@ public class AzgCartService {
                 /**
                  * Se suma todo y se guarda
                  */
+                for(LineCart line : cart.getLineCart()){
+                    line.setCart(cart);
+                }
                 sumTotal(cart);
                 return cartRepository.save(cart);
             }
@@ -63,6 +71,11 @@ public class AzgCartService {
                 /**
                  * Si solo hay uno solo, se suma todo y se guarda
                  */
+
+                for(LineCart line : cart.getLineCart()){
+                    line.setCart(cart);
+                }
+
                 sumTotal(cart);
                 return cartRepository.save(cart);
             }else{
@@ -116,18 +129,18 @@ public class AzgCartService {
 
     public void sumTotal(Cart cart){
         //Iteramos y obtenemos el total final
-        for (Book book : cart.getListBooks()) {
+        for (LineCart line : cart.getLineCart()) {
             /**
              * Ahora nos aseguramos que se mantenga el precio de lista
              *  y no se lo pueda cambiar
              */
-            Book bookaux = findBookById(book.getId()).get();
+            Book bookaux = findBookById(line.getBook().getId()).get();
             
-            book.setPrice(bookaux.getPrice());
+            line.getBook().setPrice(bookaux.getPrice());
             /**
              * Seteamos el precio final
              */
-            cart.setTotal(cart.getTotal() + book.getPrice());
+            cart.setTotal(cart.getTotal() + (line.getBook().getPrice() * line.getAmount()));
         }
     }
 
@@ -141,12 +154,17 @@ public class AzgCartService {
              * Sumamos el total actual
              */
             cart.setTotal(0.0);
+            for(LineCart line : cart.getLineCart()){
+                line.setCart(cart);
+                lineCartRepository.save(line);
+                
+            }
             sumTotal(cart);
             //La fecha y usuario no se puede cambiar
             cart.setCreatedDate(foundCart.getCreatedDate());
             cart.setUser(foundCart.getUser());
 
-            if(cart.getState().equals(StateCart.CLOSED) && cart.getListBooks().size() == 0){
+            if(cart.getState().equals(StateCart.CLOSED) && cart.getLineCart().size() == 0){
                 /**
                  * Si actualizamos estado y sacamos todos los libros retornamos nulo o error
                  */
